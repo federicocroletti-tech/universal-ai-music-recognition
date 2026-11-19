@@ -1,12 +1,16 @@
 # Universal AI Music Recognition
 
-**Status:** Draft for review by Federico Croletti. Private, local only. Nothing has been published, sent, or shared externally.
+**Status:** Draft for review by Federico Croletti. Private repository. Nothing has been published, sent, or shared externally.
 
 **Originator:** Federico Croletti
 
+**Repository:** [github.com/federicocroletti-tech/universal-ai-music-recognition](https://github.com/federicocroletti-tech/universal-ai-music-recognition) (private)
+
+**Local folder:** `C:\Federico\Progetti\universal-ai-music-recognition`
+
 ## Purpose
 
-This folder holds the working draft of the proposal for a universal, cross-platform music recognition capability that AI assistants can call from any device, operating system, or AI product.
+This project holds the working draft of the proposal for a universal, cross-platform music recognition capability that AI assistants can call from any device, operating system, or AI product. Development prompts will be added later.
 
 ## Documents
 
@@ -29,5 +33,6 @@ This folder holds the working draft of the proposal for a universal, cross-platf
 ## Next steps (requires your decision)
 
 - Review the drafts and confirm the direction (B2B platform/licensing vs. independent prototype).
-- Decide whether to start a private repository. Nothing is created remotely yet.
+- Confirm the repository stays private (created as private by default).
+- Development prompts: to be launched later.
 - Approve or reject each outreach draft individually. No message will be sent without explicit approval.
