@@ -1,10 +1,10 @@
 # Universal AI Music Recognition
 
-**Status:** Draft for review by Federico Croletti. Private repository. Nothing has been published, sent, or shared externally.
+**Status:** Draft for review by Federico Croletti. Public repository. Outreach messages have not been sent.
 
 **Originator:** Federico Croletti
 
-**Repository:** [github.com/federicocroletti-tech/universal-ai-music-recognition](https://github.com/federicocroletti-tech/universal-ai-music-recognition) (private)
+**Repository:** [github.com/federicocroletti-tech/universal-ai-music-recognition](https://github.com/federicocroletti-tech/universal-ai-music-recognition) (public)
 
 **Local folder:** `C:\Federico\Progetti\universal-ai-music-recognition`
 
