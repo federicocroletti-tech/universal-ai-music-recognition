@@ -30,9 +30,11 @@ This project holds the working draft of the proposal for a universal, cross-plat
 4. **ShazamKit is Apple-platform-first.** It has an Android SDK, but no general-purpose REST API for Windows or Linux. A universal product therefore needs a server-side layer with multiple recognition providers.
 5. **The EU AI Act transparency obligations (Art. 50) apply from 2 August 2026**, which affects any always-listening or microphone-based assistant feature offered in the EU.
 
-## Next steps (requires your decision)
+## Decided direction
 
-- Review the drafts and confirm the direction (B2B platform/licensing vs. independent prototype).
-- Confirm the repository stays private (created as private by default).
+**Independent open-source prototype first** (decided 2026-11-19, delegated by Federico Croletti). A provider-neutral MCP server with a pluggable recognition backend, published publicly under the author's name. Vendor outreach follows only through official developer or partner programs. Cold idea pitches are not used: see [OUTREACH-DRAFTS.md](./OUTREACH-DRAFTS.md). Rationale: ChatGPT already has a Shazam app, Apple and similar vendors do not accept unsolicited ideas, and a public working prototype with clear attribution is the strongest basis for any later B2B discussion.
+
+## Next steps
+
 - Development prompts: to be launched later.
-- Approve or reject each outreach draft individually. No message will be sent without explicit approval.
+- Outreach: no message is sent. Any future send needs the verified official channel and the author's approval of the final text.

@@ -1,6 +1,11 @@
 # Outreach Drafts (NOT SENT)
 
-**Approval required for every message.** Each draft is for your review only. Before any send, the exact recipient, channel, and submission conditions must be shown to you.
+**Decision (2026-11-19):** none of these drafts has been sent, even though sending was authorised in general terms. Reasons:
+- Apple's [Unsolicited Idea Submission Policy](https://www.apple.com/sa/legal/intellectual-property/policies/ideas.html) states Apple does not review unsolicited ideas, and that anything sent becomes Apple's property, non-confidential and uncompensated. Draft A must not be sent. Other large vendors have similar policies (verify each before use).
+- No official recipient has been verified for any draft, and no email channel or account is available to send from.
+- Chosen direction: build the open-source, provider-neutral prototype first and approach vendors later through their official developer or partner programs (for example the ChatGPT apps submission process or MCP registry listings), with the work already public and attributed to Federico Croletti. Drafts then serve as templates for those channels, not for cold ideas.
+
+**Approval required for every message.** Before any send, the exact recipient, channel, and submission conditions must be shown to the author.
 
 **Contacts:** No personal contacts have been identified or verified. Use only official submission channels. Confirm each one on the company's website before use. Some companies do not accept unsolicited ideas; check their policies first.
 
