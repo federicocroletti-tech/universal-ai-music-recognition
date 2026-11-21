@@ -1,1 +1,27 @@
-﻿<router-outlet />
+﻿<a class="skip-link" href="#main" (click)="skipToMain($event, main)">Vai al contenuto</a>
+<header class="site-header">
+  <a class="brand" routerLink="/" aria-label="Hum Finder, torna alla chat">
+    <svg class="brand__logo" viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="10" fill="url(#brand-gradient)" />
+      <path d="M7 17v-2M11 21V11M15 24V8M19 20v-8M23 18v-4M27 17v-2" stroke="#fff" stroke-width="2.2" stroke-linecap="round" />
+      <defs>
+        <linearGradient id="brand-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#6d3df5" />
+          <stop offset="1" stop-color="#e0457b" />
+        </linearGradient>
+      </defs>
+    </svg>
+    <span class="brand__name">Hum Finder</span>
+    <span class="brand__tag">prototipo</span>
+  </a>
+  <nav class="site-nav" aria-label="Principale">
+    <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Chat</a>
+    <a routerLink="/privacy" routerLinkActive="is-active" ariaCurrentWhenActive="page">Privacy</a>
+    <a href="https://github.com/federicocroletti-tech/universal-ai-music-recognition" target="_blank" rel="noopener noreferrer">
+      GitHub<span class="visually-hidden"> (si apre in una nuova scheda)</span>
+    </a>
+  </nav>
+</header>
+<main id="main" #main tabindex="-1">
+  <router-outlet />
+</main>

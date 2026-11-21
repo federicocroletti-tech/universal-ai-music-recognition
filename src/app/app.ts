@@ -1,10 +1,16 @@
-﻿import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+﻿import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {}
+export class App {
+  protected skipToMain(event: Event, main: HTMLElement): void {
+    event.preventDefault();
+    main.focus();
+  }
+}

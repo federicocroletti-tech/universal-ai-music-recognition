@@ -1,0 +1,49 @@
+@let candidate = best();
+<div class="result">
+  <span class="badge" [class.badge--sure]="result().verdict === 'match'">
+    {{ result().verdict === 'match' ? 'Riconosciuta' : 'Possibile' }}
+  </span>
+  <h2 class="result__title">{{ candidate.melody.title }}</h2>
+  <p class="result__meta">{{ candidate.melody.author }} · {{ candidate.melody.year }}</p>
+
+  <div class="score">
+    <span class="score__track" aria-hidden="true">
+      <span class="score__bar" [style.width.%]="percent(candidate.score)"></span>
+    </span>
+    <span class="score__label">Affinità {{ percent(candidate.score) }}%</span>
+  </div>
+
+  <div class="result__actions">
+    <button
+      type="button"
+      class="button"
+      [attr.aria-pressed]="player.playingId() === candidate.melody.id"
+      (click)="player.toggle(candidate.melody)"
+    >
+      {{ player.playingId() === candidate.melody.id ? 'Ferma' : 'Ascolta la melodia' }}
+    </button>
+    <a class="button button--ghost" [href]="searchUrl(candidate.melody)" target="_blank" rel="noopener noreferrer">
+      Cerca su Wikipedia<span class="visually-hidden"> (si apre in una nuova scheda)</span>
+    </a>
+  </div>
+
+  @if (alternatives().length > 0) {
+    <h3 class="result__subtitle">Altre possibilità</h3>
+    <ul class="alternatives">
+      @for (alternative of alternatives(); track alternative.melody.id) {
+        <li>
+          <span>{{ alternative.melody.title }} <small>{{ percent(alternative.score) }}%</small></span>
+          <button
+            type="button"
+            class="link-button"
+            [attr.aria-pressed]="player.playingId() === alternative.melody.id"
+            (click)="player.toggle(alternative.melody)"
+          >
+            {{ player.playingId() === alternative.melody.id ? 'Ferma' : 'Ascolta' }}
+            <span class="visually-hidden">{{ alternative.melody.title }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>
