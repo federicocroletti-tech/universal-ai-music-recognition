@@ -1,4 +1,4 @@
-﻿/* Design tokens. System fonts only: fast, and no requests to third-party font services. */
+/* Design tokens. System fonts only: fast, and no requests to third-party font services. */
 :root {
   color-scheme: light dark;
   --header-height: 4rem;
