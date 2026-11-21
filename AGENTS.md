@@ -27,7 +27,24 @@ Read this file first. It is the single source of truth for workflow, architectur
 | `npm start` | Dev server on http://localhost:4200 |
 | `npm test` | Unit tests (Angular unit-test builder with Vitest) |
 | `npm run build` | Static prerendered build in `dist/hum-finder/browser` |
-| `npm run e2e` | Playwright end-to-end tests on the local build (run `npm run build` first). A synthesized hum is played through Chromium's fake microphone; axe checks accessibility. Set `E2E_BASE_URL` to test a deployed URL instead. Uses port 4317. |
+| `npm run e2e` | Playwright end-to-end tests on the local build (run `npm run build` first). A synthesized hum is played through Chromium's fake microphone; axe checks accessibility; the local server applies the `vercel.json` headers. Set `E2E_BASE_URL` to test a deployed URL instead. Uses port 4317. |
+| `node scripts/generate-images.mjs` | Regenerates `favicon.ico`, PNG icons, and `og-image.png` from `public/favicon.svg` (uses Playwright's Chromium) |
+
+## Deploy (Vercel, free Hobby plan)
+
+- **Production:** https://hum-finder-croletti.vercel.app (Vercel project `hum-finder-croletti`, account `federicocrolettitech-1855`).
+- The GitHub repo is connected to the Vercel project: every push to `main` deploys to production; pull requests get preview deployments.
+- Build settings live in `vercel.json` (install `npm ci`, build `npm run build`, output `dist/hum-finder/browser`, Node `22.x` from `package.json`).
+- Manual deploy if needed: `npx vercel deploy --prod` (requires `npx vercel login`). `.vercel/` and `.env.local` are local link files: never commit them.
+- After a deploy, run the E2E suite against production: `E2E_BASE_URL=https://hum-finder-croletti.vercel.app npm run e2e`.
+
+## SEO and security
+
+- Every route is prerendered to static HTML. `src/app/seo.ts` (`SeoTitleStrategy`) sets title, description, canonical URL, and Open Graph/Twitter tags from the route `title` and `data.description`.
+- `src/index.html` holds the shared social image tags and JSON-LD (`WebApplication`). `public/` holds `robots.txt`, `sitemap.xml`, `manifest.webmanifest`, and icons.
+- If the domain changes, update `SITE_URL` in `seo.ts`, the absolute URLs in `index.html`, `robots.txt`, and `sitemap.xml`.
+- `vercel.json` sets a strict Content Security Policy (no inline scripts), `Permissions-Policy` (microphone only for this site), HSTS, `nosniff`, frame blocking, and long-term caching for hashed JS/CSS.
+- Incremental hydration is disabled in `app.config.ts`: in Angular 22 it is on by default and enables event replay, which injects inline scripts the CSP would block. The E2E test fails on any console error, so CSP violations are caught.
 
 ## Architecture
 
@@ -87,8 +104,8 @@ Design: CSS custom properties in `src/styles.css`, light and dark themes via `pr
 | Repo setup: Angular scaffold, static output, CI, license, docs | `chore/setup-repo` | Done |
 | Recognition engine: pitch detection, note segmentation, matcher, catalog, worker | `feat/recognition-engine` | Done |
 | Chat UI: recorder, results, melody preview, privacy page, accessibility, E2E tests | `feat/chat-ui` | Done |
-| SEO, security headers, Vercel deploy | `feat/seo-deploy` | Next |
-| Link the live demo from the author's website | site repo | Planned |
+| SEO, security headers, Vercel deploy | `feat/seo-deploy` | Done |
+| Link the live demo from the author's website | site repo | Next |
 
 ## Ideas for later (not started)
 
