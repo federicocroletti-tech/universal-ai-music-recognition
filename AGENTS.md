@@ -14,7 +14,7 @@ Read this file first. It is the single source of truth for workflow, architectur
 
 1. `git checkout main && git pull`
 2. `git checkout -b <type>/<short-name>` (types: `feat`, `fix`, `chore`, `docs`)
-3. Implement, then validate locally: `npm test` and `npm run build` (plus `npm run e2e` once it exists).
+3. Implement, then validate locally: `npm test`, `npm run build`, and `npm run e2e`.
 4. Commit, push, and open a PR: `gh pr create --base main --fill`
 5. Wait for CI: `gh pr checks --watch`, then merge: `gh pr merge --merge --delete-branch`
 6. Update the **Status** section below in the same PR, then start the next activity from step 1.
@@ -27,6 +27,7 @@ Read this file first. It is the single source of truth for workflow, architectur
 | `npm start` | Dev server on http://localhost:4200 |
 | `npm test` | Unit tests (Angular unit-test builder with Vitest) |
 | `npm run build` | Static prerendered build in `dist/hum-finder/browser` |
+| `npm run e2e` | Playwright end-to-end tests on the local build (run `npm run build` first). A synthesized hum is played through Chromium's fake microphone; axe checks accessibility. Set `E2E_BASE_URL` to test a deployed URL instead. Uses port 4317. |
 
 ## Architecture
 
@@ -50,6 +51,25 @@ Pipeline: microphone PCM (mono, 16 kHz) → `pitch.ts` → `segmentation.ts` →
 
 The verdict thresholds in `matcher.ts` were calibrated on synthetic hums (±0.5 semitone errors, skipped notes) and on non-catalog melodies. `matcher.spec.ts` locks the expected behaviour: change thresholds only together with that spec.
 
+### Web app (`src/app/`)
+
+| Path | Role |
+|---|---|
+| `app.ts`, `app.html`, `app.css` | Shell: skip link, header, navigation |
+| `app.routes.ts` | `/` chat (prerendered), `/privacy` (lazy, prerendered) |
+| `app.config.ts` | Providers; the `Assistant` strategy is bound here |
+| `chat/chat.store.ts` | Facade with signals: messages, recording lifecycle (max 12 s), recognition |
+| `chat/assistant.ts` | `Assistant` abstract strategy + `LocalAssistant` (pre-written Italian replies, no AI model). Replace it with an LLM-backed class without touching the UI |
+| `chat/chat-page.*` | Chat UI: `role="log"` conversation, composer, record button with level and progress ring |
+| `chat/result-card.*` | Deferred (`@defer`) result card: score, melody preview, Wikipedia search link, alternatives |
+| `audio/audio-capture.service.ts` | `getUserMedia` + `MediaRecorder`, then decode and resample to 16 kHz mono with `OfflineAudioContext`. Releases the microphone right after recording |
+| `audio/melody-player.service.ts` | Melody preview synthesized with Web Audio oscillators |
+| `privacy/privacy-page.ts` | Privacy notice (Italian) |
+
+Performance: initial bundle about 86 kB transferred. The recognition worker, result card, privacy page, and catalog are lazy chunks; the worker is prefetched when the user hovers or focuses the record button.
+
+Design: CSS custom properties in `src/styles.css`, light and dark themes via `prefers-color-scheme`, system fonts, `prefers-reduced-motion` respected, responsive from 320 px.
+
 ## Decisions (with reasons)
 
 | Decision | Reason / source |
@@ -66,8 +86,8 @@ The verdict thresholds in `matcher.ts` were calibrated on synthetic hums (±0.5 
 |---|---|---|
 | Repo setup: Angular scaffold, static output, CI, license, docs | `chore/setup-repo` | Done |
 | Recognition engine: pitch detection, note segmentation, matcher, catalog, worker | `feat/recognition-engine` | Done |
-| Chat UI: recorder, results, melody preview, privacy page, accessibility | `feat/chat-ui` | Next |
-| SEO, security headers, E2E with fake microphone, Vercel deploy | `feat/seo-deploy` | Planned |
+| Chat UI: recorder, results, melody preview, privacy page, accessibility, E2E tests | `feat/chat-ui` | Done |
+| SEO, security headers, Vercel deploy | `feat/seo-deploy` | Next |
 | Link the live demo from the author's website | site repo | Planned |
 
 ## Ideas for later (not started)

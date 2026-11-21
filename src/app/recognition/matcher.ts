@@ -110,7 +110,7 @@ function substitution(a: number, b: number): number {
   return Math.min(Math.abs(a - b), SUBSTITUTION_CAP);
 }
 
-/** Maps distinctness to a 0–1 display score (0.2 is typical of unrelated melodies, 0.7 of clear matches). */
+/** Maps distinctness to a 0–0.99 display score: clear matches land around 0.7–0.95, unrelated melodies below 0.4. */
 function toScore(distinctness: number): number {
-  return Math.max(0, Math.min(1, (distinctness - 0.2) / 0.5));
+  return Math.max(0, Math.min(0.99, distinctness / 0.9));
 }

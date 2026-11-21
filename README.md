@@ -19,6 +19,7 @@ npm ci        # install dependencies
 npm start     # dev server on http://localhost:4200
 npm test      # unit tests (Vitest)
 npm run build # static prerendered build in dist/hum-finder/browser
+npm run e2e   # end-to-end tests with a simulated microphone (after build)
 ```
 
 To continue development (human or AI agent), read [AGENTS.md](./AGENTS.md) first: workflow, architecture, decisions, current status, and next steps.
