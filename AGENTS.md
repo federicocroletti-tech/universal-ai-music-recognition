@@ -34,6 +34,22 @@ Read this file first. It is the single source of truth for workflow, architectur
 - **Client-server balance:** all recognition runs in the browser (privacy, zero cost, offline-capable). The host only serves static files from a CDN.
 - **Layout:** Angular app at the repo root (`src/`, `public/`), proposal documents in `docs/proposal/`.
 
+### Recognition engine (`src/app/recognition/`)
+
+Pipeline: microphone PCM (mono, 16 kHz) → `pitch.ts` → `segmentation.ts` → `matcher.ts` → result.
+
+| File | Role |
+|---|---|
+| `pitch.ts` | YIN pitch detection (de Cheveigné and Kawahara, 2002): 32 ms window, 10 ms hop, 70–1000 Hz |
+| `segmentation.ts` | Energy gate relative to the recording, median smoothing, notes split on silences and pitch jumps > 0.75 semitones |
+| `matcher.ts` | Key-independent matching on intervals between distinct notes; semi-global alignment that tolerates skipped or extra notes; verdict `match` / `uncertain` / `none` / `too-short` |
+| `catalog.ts` | 28 public-domain melodies in compact notation (`E4 F#4:0.5 ...`), transcribed by hand: verify against public-domain scores before adding more |
+| `recognizer.ts` | Pure function that runs the whole pipeline (used by the worker and the tests) |
+| `recognition.worker.ts`, `recognition.service.ts` | Runs the pipeline in a lazily created Web Worker so the UI never blocks |
+| `testing/synthesize.ts` | Deterministic hum synthesizer for tests (harmonics, vibrato, noise) |
+
+The verdict thresholds in `matcher.ts` were calibrated on synthetic hums (±0.5 semitone errors, skipped notes) and on non-catalog melodies. `matcher.spec.ts` locks the expected behaviour: change thresholds only together with that spec.
+
 ## Decisions (with reasons)
 
 | Decision | Reason / source |
@@ -49,8 +65,8 @@ Read this file first. It is the single source of truth for workflow, architectur
 | Activity | Branch | State |
 |---|---|---|
 | Repo setup: Angular scaffold, static output, CI, license, docs | `chore/setup-repo` | Done |
-| Recognition engine: pitch detection, note segmentation, matcher, catalog, worker | `feat/recognition-engine` | Next |
-| Chat UI: recorder, results, melody preview, privacy page, accessibility | `feat/chat-ui` | Planned |
+| Recognition engine: pitch detection, note segmentation, matcher, catalog, worker | `feat/recognition-engine` | Done |
+| Chat UI: recorder, results, melody preview, privacy page, accessibility | `feat/chat-ui` | Next |
 | SEO, security headers, E2E with fake microphone, Vercel deploy | `feat/seo-deploy` | Planned |
 | Link the live demo from the author's website | site repo | Planned |
 
