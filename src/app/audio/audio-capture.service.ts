@@ -112,7 +112,9 @@ export class AudioCaptureService {
   }
 
   private releaseMicrophone(): void {
-    cancelAnimationFrame(this.frame);
+    if (typeof cancelAnimationFrame === 'function') {
+      cancelAnimationFrame(this.frame);
+    }
     this.level.set(0);
     this.stream?.getTracks().forEach((track) => track.stop());
     this.stream = undefined;
