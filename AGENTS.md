@@ -108,8 +108,9 @@ Design: CSS custom properties in `src/styles.css`, light and dark themes via `pr
 | Recognition engine: pitch detection, note segmentation, matcher, catalog, worker | `feat/recognition-engine` | Done |
 | Chat UI: recorder, results, melody preview, privacy page, accessibility, E2E tests | `feat/chat-ui` | Done |
 | SEO, security headers, Vercel deploy | `feat/seo-deploy` | Done |
-| Provider-neutral MCP server (local stdio, PCM16, catalog tool) | `feat/mcp-server` | In progress |
-| Link the live demo from the author's website | site repo | Next |
+| Provider-neutral MCP server (local stdio, PCM16, catalog tool) | `feat/mcp-server` | Done |
+| Larger catalog (public-domain melodies) | `feat/recognition-real-hum-accuracy` | In progress |
+| Link the live demo from the author's website | site repo | Done |
 
 ## Ideas for later (not started)
 
