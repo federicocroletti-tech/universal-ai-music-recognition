@@ -10,6 +10,8 @@
 
 ## Hum Finder (prototype web app)
 
+**Live demo:** https://hum-finder-croletti.vercel.app
+
 A chat-style web app: press the microphone, hum a melody, and the app tries to identify it. Recognition runs entirely in the browser and the audio never leaves the device. It matches against a small catalog of public-domain melodies, so it only recognizes songs in that catalog.
 
 Quick start (Node.js 22):
