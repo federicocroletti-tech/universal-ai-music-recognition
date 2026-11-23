@@ -11,7 +11,7 @@
     "build:mcp": "tsc -p tsconfig.server.json",
     "mcp": "npm run build:mcp && node dist-server/server/run.js",
     "server:http": "npm run build:mcp && node dist-server/server/http-run.js",
-    "test:mcp": "vitest run server/index.spec.ts server/providers/audd.spec.ts"
+    "test:mcp": "vitest run server/index.spec.ts server/http-app.spec.ts server/providers/audd.spec.ts"
   },
   "private": true,
   "type": "module",

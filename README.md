@@ -31,7 +31,7 @@ npm run mcp
 # Tools: recognize_hum (PCM16 base64 + sample rate), list_catalog
 ```
 
-The MCP server has two modes: `recognize_hum` is an offline demo matcher against the bundled public-domain demo catalog; `identify_song` sends recorded audio to the configured enterprise provider only when `AUDD_API_TOKEN` and explicit `consentReference` are supplied.
+The MCP server has two modes: `recognize_hum` is an offline demo matcher against the small bundled demo catalog; `identify_song` sends recorded audio to the configured external provider only when `AUDD_API_TOKEN` and explicit consent are supplied.
 
 Enterprise HTTP API:
 
@@ -41,7 +41,9 @@ npm run server:http
 # POST /v1/recognitions
 ```
 
-Set `AUDD_API_TOKEN` for the AudD provider. Set optional `UAMR_API_KEY` to require `Authorization: Bearer <key>` on recognition requests.
+Set `AUDD_API_TOKEN` for the AudD provider and `UAMR_API_KEY` to enable authenticated HTTP recognition. The HTTP recognition route fails closed if no API key is configured; only `/health` is public. Do not expose this starter server directly to the internet without TLS, managed secrets, rate limiting, and deployment-specific monitoring.
+
+Audio sent to AudD leaves the device and is processed by that third-party provider; review its current terms and privacy policy before production use. The [AudD API documentation](https://docs.audd.io/) states a 10 MB file limit for its standard endpoint. A user-supplied consent flag/reference is an application-level signal, not legal advice or a substitute for a documented consent flow. No live provider key is included in this repository.
 
 To continue development (human or AI agent), read [AGENTS.md](./AGENTS.md) first: workflow, architecture, decisions, current status, and next steps.
 
