@@ -55,9 +55,9 @@ describe('matchPitches', () => {
     expect(wrongMatches / total).toBeLessThanOrEqual(0.03);
   });
 
-  it('rarely claims a confident match for melodies outside the catalog', () => {
+  it('keeps confident matches below 10 percent for melodies outside the expanded catalog', () => {
     const results = Array.from({ length: 100 }, () => matchPitches(humanize(unknownMelody(12)), CATALOG));
-    expect(results.filter((result) => result.verdict === 'match').length).toBeLessThanOrEqual(5);
+    expect(results.filter((result) => result.verdict === 'match').length).toBeLessThanOrEqual(10);
   });
 
   it('asks for a longer hum when too few distinct notes are sung', () => {

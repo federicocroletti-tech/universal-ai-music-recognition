@@ -23,4 +23,17 @@ describe('CATALOG', () => {
       expect(melody.notes.length, melody.id).toBeGreaterThanOrEqual(8);
     }
   });
+
+  it('includes the expanded public-domain traditional selections', () => {
+    expect(CATALOG.map((melody) => melody.id)).toEqual(
+      expect.arrayContaining([
+        'baa-baa-black-sheep',
+        'pop-goes-the-weasel',
+        'camptown-races',
+        'scarborough-fair',
+        'clementine',
+        'londonderry-air',
+      ]),
+    );
+  });
 });

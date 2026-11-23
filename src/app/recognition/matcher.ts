@@ -10,6 +10,8 @@ const MIN_INTERVALS = 4;
 const MATCH_MIN_DISTINCTNESS = 0.45;
 const MATCH_MIN_MARGIN = 0.2;
 const UNCERTAIN_MIN_DISTINCTNESS = 0.35;
+const CLEAR_MATCH_MIN_DISTINCTNESS = 0.75;
+const CLEAR_MATCH_MIN_MARGIN = 0.1;
 
 /**
  * Converts pitches to the intervals between distinct consecutive notes.
@@ -83,7 +85,8 @@ export function matchPitches(pitches: readonly number[], catalog: readonly Melod
   const margin = second ? second.cost - best.cost : Infinity;
   const bestDistinctness = distinctness(best.cost);
   const verdict: Verdict =
-    bestDistinctness >= MATCH_MIN_DISTINCTNESS && margin >= MATCH_MIN_MARGIN
+    (bestDistinctness >= MATCH_MIN_DISTINCTNESS && margin >= MATCH_MIN_MARGIN)
+      || (bestDistinctness >= CLEAR_MATCH_MIN_DISTINCTNESS && margin >= CLEAR_MATCH_MIN_MARGIN)
       ? 'match'
       : bestDistinctness >= UNCERTAIN_MIN_DISTINCTNESS
         ? 'uncertain'
