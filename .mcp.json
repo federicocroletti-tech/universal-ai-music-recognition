@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "music-recognition": {
+      "type": "stdio",
+      "command": "npm",
+      "args": ["run", "mcp"]
+    }
+  }
+}

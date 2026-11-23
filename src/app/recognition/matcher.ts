@@ -1,4 +1,4 @@
-import { Melody, RecognitionResult, Verdict } from './models';
+import { Melody, RecognitionResult, Verdict } from './models.js';
 
 /** Consecutive notes closer than this (semitones) count as the same note. */
 const SAME_NOTE = 0.5;

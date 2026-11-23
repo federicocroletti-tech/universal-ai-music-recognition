@@ -1,8 +1,8 @@
-import { CATALOG } from './catalog';
-import { matchPitches } from './matcher';
-import { Melody, RecognitionResult } from './models';
-import { detectPitch } from './pitch';
-import { segmentNotes } from './segmentation';
+import { CATALOG } from './catalog.js';
+import { matchPitches } from './matcher.js';
+import { Melody, RecognitionResult } from './models.js';
+import { detectPitch } from './pitch.js';
+import { segmentNotes } from './segmentation.js';
 
 export function recognize(
   samples: Float32Array,
