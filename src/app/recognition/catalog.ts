@@ -229,54 +229,6 @@ const ENTRIES: readonly CatalogEntry[] = [
     score:
       'E5 B4:0.5 C5:0.5 D5 C5:0.5 B4:0.5 | A4 A4:0.5 C5:0.5 E5 D5:0.5 C5:0.5 | B4:1.5 C5:0.5 D5 E5 | C5 A4 A4:2 | D5:1.5 F5:0.5 A5 G5:0.5 F5:0.5 | E5:1.5 C5:0.5 E5 D5:0.5 C5:0.5 | B4 B4:0.5 C5:0.5 D5 E5 | C5 A4 A4:2',
   },
-  {
-    id: 'baa-baa-black-sheep',
-    title: 'Baa, Baa, Black Sheep',
-    author: 'Tradizionale inglese',
-    year: 'XVIII secolo',
-    score:
-      'G4 G4 D5 D5 | E5 D5 C5 B4 | G4 G4 D5 D5 | E5 D5 C5 B4 | G4 G4 G4 G4 | D5 D5 D5 D5 | E5 E5 D5 D5 | C5 C5 B4 B4 | G4 G4 D5 D5 | E5 D5 C5 B4',
-  },
-  {
-    id: 'pop-goes-the-weasel',
-    title: 'Pop! Goes the Weasel',
-    author: 'Tradizionale',
-    year: 'XIX secolo',
-    score:
-      'C4 E4 G4 G4 G4 F4 E4 D4 | C4 E4 G4 G4 G4 F4 E4 D4 | G4 G4 G4 G4 A4 A4 G4 G4 | F4 E4 D4 C4',
-  },
-  {
-    id: 'camptown-races',
-    title: 'Camptown Races',
-    author: 'Stephen Foster',
-    year: '1850',
-    score:
-      'C4 C4 E4 G4 G4 E4 C4 D4 | E4 G4 G4 G4 E4 C4 D4 E4 | C4 C4 E4 G4 G4 E4 C4 D4 | E4 G4 G4 G4 E4 C4 D4 C4',
-  },
-  {
-    id: 'scarborough-fair',
-    title: 'Scarborough Fair',
-    author: 'Tradizionale inglese',
-    year: 'XVI-XVII secolo',
-    score:
-      'D4 E4 D4 B3:2 | D4 E4 G4 A4:2 | B4 A4 G4 E4:2 | D4 E4 D4 B3:2 | D4 E4 G4 A4 B4 A4 G4 E4 D4',
-  },
-  {
-    id: 'clementine',
-    title: 'Oh My Darling, Clementine',
-    author: 'Tradizionale',
-    year: '1884',
-    score:
-      'G4 G4 G4 E4 G4 G4 G4 E4 | G4 G4 G4 G4 A4 A4 G4 E4 | G4 G4 G4 E4 G4 G4 G4 E4 | G4 G4 G4 G4 A4 A4 G4:2',
-  },
-  {
-    id: 'londonderry-air',
-    title: 'Londonderry Air (Danny Boy)',
-    author: 'Melodia tradizionale irlandese',
-    year: 'Fine XIX secolo',
-    score:
-      'F4 G4 A4 D5 C5 A4 G4 F4 D4 F4 G4 A4:2 | D5 C5 A4 G4 F4 D4 F4 G4 D4 C4 D4:2',
-  },
 ];
 
 export const CATALOG: readonly Melody[] = ENTRIES.map(({ score, ...entry }) => ({

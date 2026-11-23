@@ -2,6 +2,8 @@ import * as z from 'zod/v4';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { CATALOG } from '../src/app/recognition/catalog.js';
 import { recognize } from '../src/app/recognition/recognizer.js';
+import { AudDProvider } from './providers/audd.js';
+import { RecognitionProvider } from './providers/types.js';
 
 const PCM16_MAX_BYTES = 16 * 1024 * 1024;
 
@@ -94,5 +96,48 @@ export function createMcpServer(): McpServer {
     }],
   }));
 
+  server.registerTool('identify_song', {
+    title: 'Identify a recorded song',
+    description:
+      'Identifies recorded audio through the configured enterprise provider. Raw audio is sent only when AUDD_API_TOKEN is configured and a consentReference is supplied.',
+    inputSchema: {
+      audioBase64: z.string().min(1).describe('Base64-encoded audio file'),
+      mimeType: z.string().default('audio/wav').describe('IANA audio MIME type'),
+      filename: z.string().default('recording.wav').describe('Filename used for the upload'),
+      consentReference: z.string().min(1).describe('Reference to explicit user consent for this recognition request'),
+    },
+    annotations: {
+      readOnlyHint: true,
+      openWorldHint: true,
+    },
+  }, async ({ audioBase64, mimeType, filename, consentReference }) => {
+    const provider = createProvider();
+    if (!provider) {
+      return {
+        isError: true,
+        content: [{ type: 'text', text: 'No enterprise recognition provider is configured. Set AUDD_API_TOKEN.' }],
+      };
+    }
+
+    const buffer = Buffer.from(audioBase64, 'base64');
+    if (buffer.length === 0 || buffer.length > PCM16_MAX_BYTES) {
+      return {
+        isError: true,
+        content: [{ type: 'text', text: 'Audio must be non-empty and at most 16 MB' }],
+      };
+    }
+
+    const result = await provider.recognize({ buffer, mimeType, filename, consentReference });
+    return {
+      content: [{ type: 'text', text: JSON.stringify(result) }],
+      structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown>,
+    };
+  });
+
   return server;
+}
+
+export function createProvider(): RecognitionProvider | undefined {
+  const apiToken = process.env['AUDD_API_TOKEN'];
+  return apiToken ? new AudDProvider(apiToken) : undefined;
 }

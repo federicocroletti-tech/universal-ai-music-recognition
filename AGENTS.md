@@ -30,6 +30,7 @@ Read this file first. It is the single source of truth for workflow, architectur
 | `npm run build:mcp` | Compiles the local MCP stdio server |
 | `npm run mcp` | Builds and starts the MCP server over stdio |
 | `npm run test:mcp` | Runs MCP base64/PCM unit tests |
+| `npm run server:http` | Starts the versioned enterprise recognition HTTP API |
 | `npm run e2e` | Playwright end-to-end tests on the local build (run `npm run build` first). A synthesized hum is played through Chromium's fake microphone; axe checks accessibility; the local server applies the `vercel.json` headers. Set `E2E_BASE_URL` to test a deployed URL instead. Uses port 4317. |
 | `node scripts/generate-images.mjs` | Regenerates `favicon.ico`, PNG icons, and `og-image.png` from `public/favicon.svg` (uses Playwright's Chromium) |
 
@@ -109,7 +110,8 @@ Design: CSS custom properties in `src/styles.css`, light and dark themes via `pr
 | Chat UI: recorder, results, melody preview, privacy page, accessibility, E2E tests | `feat/chat-ui` | Done |
 | SEO, security headers, Vercel deploy | `feat/seo-deploy` | Done |
 | Provider-neutral MCP server (local stdio, PCM16, catalog tool) | `feat/mcp-server` | Done |
-| Larger catalog (public-domain melodies) | `feat/recognition-real-hum-accuracy` | In progress |
+| Enterprise recognition provider API | `feat/enterprise-provider-api` | In progress |
+| Larger song catalog via external providers | provider-backed | Planned |
 | Link the live demo from the author's website | site repo | Done |
 
 ## Ideas for later (not started)

@@ -31,7 +31,17 @@ npm run mcp
 # Tools: recognize_hum (PCM16 base64 + sample rate), list_catalog
 ```
 
-The MCP server is provider-neutral and offline. It accepts mono 16-bit little-endian PCM audio and matches it locally against the bundled public-domain catalog. No audio is uploaded.
+The MCP server has two modes: `recognize_hum` is an offline demo matcher against the bundled public-domain demo catalog; `identify_song` sends recorded audio to the configured enterprise provider only when `AUDD_API_TOKEN` and explicit `consentReference` are supplied.
+
+Enterprise HTTP API:
+
+```bash
+npm run server:http
+# GET /health
+# POST /v1/recognitions
+```
+
+Set `AUDD_API_TOKEN` for the AudD provider. Set optional `UAMR_API_KEY` to require `Authorization: Bearer <key>` on recognition requests.
 
 To continue development (human or AI agent), read [AGENTS.md](./AGENTS.md) first: workflow, architecture, decisions, current status, and next steps.
 
