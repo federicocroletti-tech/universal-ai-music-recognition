@@ -4,6 +4,7 @@ import { CATALOG } from '../src/app/recognition/catalog.js';
 import { recognize } from '../src/app/recognition/recognizer.js';
 import { AudDProvider } from './providers/audd.js';
 import { RecognitionProvider } from './providers/types.js';
+import { createRecognitionAudio, MAX_BASE64_LENGTH } from './providers/audio-input.js';
 
 const PCM16_MAX_BYTES = 16 * 1024 * 1024;
 
@@ -101,16 +102,17 @@ export function createMcpServer(): McpServer {
     description:
       'Identifies recorded audio through the configured enterprise provider. Raw audio is sent only when AUDD_API_TOKEN is configured and a consentReference is supplied.',
     inputSchema: {
-      audioBase64: z.string().min(1).describe('Base64-encoded audio file'),
+      audioBase64: z.string().min(1).max(MAX_BASE64_LENGTH).describe('Base64-encoded audio file (max 10 MB)'),
       mimeType: z.string().default('audio/wav').describe('IANA audio MIME type'),
       filename: z.string().default('recording.wav').describe('Filename used for the upload'),
+      consentGranted: z.literal(true).describe('Must be true only after explicit user consent to send audio to the provider'),
       consentReference: z.string().min(1).describe('Reference to explicit user consent for this recognition request'),
     },
     annotations: {
       readOnlyHint: true,
       openWorldHint: true,
     },
-  }, async ({ audioBase64, mimeType, filename, consentReference }) => {
+  }, async ({ audioBase64, mimeType, filename, consentGranted, consentReference }) => {
     const provider = createProvider();
     if (!provider) {
       return {
@@ -119,15 +121,31 @@ export function createMcpServer(): McpServer {
       };
     }
 
-    const buffer = Buffer.from(audioBase64, 'base64');
-    if (buffer.length === 0 || buffer.length > PCM16_MAX_BYTES) {
+    let audio;
+    try {
+      audio = createRecognitionAudio({
+        audioBase64,
+        mimeType,
+        filename,
+        consentGranted,
+        consentReference,
+      });
+    } catch (error) {
       return {
         isError: true,
-        content: [{ type: 'text', text: 'Audio must be non-empty and at most 16 MB' }],
+        content: [{ type: 'text', text: error instanceof Error ? error.message : 'Invalid audio request' }],
       };
     }
 
-    const result = await provider.recognize({ buffer, mimeType, filename, consentReference });
+    let result;
+    try {
+      result = await provider.recognize(audio);
+    } catch {
+      return {
+        isError: true,
+        content: [{ type: 'text', text: 'Recognition provider failed; no audio or credentials were logged.' }],
+      };
+    }
     return {
       content: [{ type: 'text', text: JSON.stringify(result) }],
       structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown>,

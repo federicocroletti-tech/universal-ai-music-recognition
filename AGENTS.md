@@ -29,7 +29,7 @@ Read this file first. It is the single source of truth for workflow, architectur
 | `npm run build` | Static prerendered build in `dist/hum-finder/browser` |
 | `npm run build:mcp` | Compiles the local MCP stdio server |
 | `npm run mcp` | Builds and starts the MCP server over stdio |
-| `npm run test:mcp` | Runs MCP base64/PCM unit tests |
+| `npm run test:mcp` | Runs MCP, HTTP API, and provider tests |
 | `npm run server:http` | Starts the versioned enterprise recognition HTTP API |
 | `npm run e2e` | Playwright end-to-end tests on the local build (run `npm run build` first). A synthesized hum is played through Chromium's fake microphone; axe checks accessibility; the local server applies the `vercel.json` headers. Set `E2E_BASE_URL` to test a deployed URL instead. Uses port 4317. |
 | `node scripts/generate-images.mjs` | Regenerates `favicon.ico`, PNG icons, and `og-image.png` from `public/favicon.svg` (uses Playwright's Chromium) |
@@ -97,7 +97,8 @@ Design: CSS custom properties in `src/styles.css`, light and dark themes via `pr
 |---|---|
 | On-device humming recognition against a public-domain melody catalog | No free permanent recognition API was found. AudD offers a 300-request trial for 14 days, then paid plans ([audd.io/pricing](https://audd.io/pricing/)). On-device processing also avoids sending voice data. |
 | No external LLM in the prototype | Gemini API terms could not be read from the author's corporate network (Gen AI category blocked), so free-tier data handling under GDPR is not verified. No API key is available. The chat uses a local rule-based assistant behind an interface that an LLM can implement later. |
-| No authentication | No accounts, no stored personal data, no paid API to protect. |
+| Authentication for the enterprise HTTP API | The recognition route requires a configured `UAMR_API_KEY`; local MCP stdio remains suitable for a trusted local client. |
+| External provider calls require explicit request consent | Provider-backed recognition sends audio off-device. Consent is required by the API contract, but the consent reference is an application-level signal, not proof of legal compliance. |
 | Static hosting on Vercel (Hobby) | Free plan ([vercel.com/docs/plans/hobby](https://vercel.com/docs/plans/hobby)), custom security headers, CLI already linked to the author's account. Before any commercial use, check the [Vercel Terms](https://vercel.com/legal/terms) on Hobby usage (not verified in this session). |
 | Apache 2.0 license | Explicit permissions plus a patent grant. |
 
@@ -110,14 +111,15 @@ Design: CSS custom properties in `src/styles.css`, light and dark themes via `pr
 | Chat UI: recorder, results, melody preview, privacy page, accessibility, E2E tests | `feat/chat-ui` | Done |
 | SEO, security headers, Vercel deploy | `feat/seo-deploy` | Done |
 | Provider-neutral MCP server (local stdio, PCM16, catalog tool) | `feat/mcp-server` | Done |
-| Enterprise recognition provider API | `feat/enterprise-provider-api` | In progress |
+| Enterprise recognition provider API | `feat/enterprise-provider-api` | Done |
+| Secure HTTP provider API, consent, payload validation and provider failure handling | `feat/enterprise-api-hardening` | Done |
 | Larger song catalog via external providers | provider-backed | Planned |
 | Link the live demo from the author's website | site repo | Done |
 
 ## Ideas for later (not started)
 
 - Larger catalog (verify each melody against public-domain scores).
-- Optional external recognition provider for real recordings (paid or trial; needs server-side key and consent flow).
+- Production deployment for the provider-backed HTTP API (requires hosting, TLS, managed secrets, rate limiting, monitoring, and a product-grade consent/privacy flow).
 - Optional LLM assistant after verifying provider terms and GDPR data handling.
 - English UI and i18n.
 - MCP server exposing the recognition engine (see [docs/proposal/ARCHITECTURE.md](./docs/proposal/ARCHITECTURE.md)).

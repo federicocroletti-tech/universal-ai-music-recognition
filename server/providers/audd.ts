@@ -1,24 +1,33 @@
 import { RecognitionAudio, RecognitionMatch, RecognitionProvider } from './types.js';
+import * as z from 'zod/v4';
 
-interface AuddResult {
-  readonly title?: string;
-  readonly artist?: string;
-  readonly album?: string;
-  readonly release_date?: string;
-  readonly isrc?: string;
-  readonly timecode?: string;
-  readonly score?: number;
-  readonly song_link?: string;
-  readonly apple_music?: { readonly url?: string };
-  readonly spotify?: { readonly external_urls?: { readonly spotify?: string } };
-  readonly deezer?: { readonly link?: string };
-  readonly musicbrainz?: { readonly release_group_id?: string };
-}
+const linkSchema = z.string().url();
+const auddResultSchema = z.object({
+  title: z.string().min(1),
+  artist: z.string().optional(),
+  album: z.string().optional(),
+  release_date: z.string().optional(),
+  isrc: z.string().optional(),
+  timecode: z.string().optional(),
+  score: z.number().finite().optional(),
+  song_link: linkSchema.optional(),
+  apple_music: z.object({ url: linkSchema.optional() }).optional(),
+  spotify: z.object({ external_urls: z.object({ spotify: linkSchema.optional() }).optional() }).optional(),
+  deezer: z.object({ link: linkSchema.optional() }).optional(),
+}).passthrough();
+const auddResponseSchema = z.object({
+  status: z.string(),
+  result: z.union([auddResultSchema, z.array(auddResultSchema), z.null()]).optional(),
+  error: z.object({ error_code: z.number().optional() }).passthrough().optional(),
+}).passthrough();
 
-interface AuddResponse {
-  readonly status?: string;
-  readonly result?: AuddResult | readonly AuddResult[] | null;
-  readonly error?: { readonly error_message?: string; readonly error_code?: number };
+export class ProviderRequestError extends Error {
+  constructor(
+    readonly code: 'provider_timeout' | 'provider_unavailable' | 'provider_rejected',
+    message: string,
+  ) {
+    super(message);
+  }
 }
 
 export class AudDProvider implements RecognitionProvider {
@@ -44,14 +53,34 @@ export class AudDProvider implements RecognitionProvider {
       audio.filename,
     );
 
-    const response = await fetch(this.endpoint, { method: 'POST', body: form });
+    let response: Response;
+    try {
+      response = await fetch(this.endpoint, {
+        method: 'POST',
+        body: form,
+        signal: AbortSignal.timeout(10_000),
+      });
+    } catch (error) {
+      if (error instanceof Error && error.name === 'TimeoutError') {
+        throw new ProviderRequestError('provider_timeout', 'Recognition provider timed out');
+      }
+      throw new ProviderRequestError('provider_unavailable', 'Recognition provider is unavailable');
+    }
     if (!response.ok) {
-      throw new Error(`AudD returned HTTP ${response.status}`);
+      throw new ProviderRequestError('provider_unavailable', `Recognition provider returned HTTP ${response.status}`);
     }
 
-    const payload = (await response.json()) as AuddResponse;
+    let payload: z.output<typeof auddResponseSchema>;
+    try {
+      payload = auddResponseSchema.parse(await response.json());
+    } catch {
+      throw new ProviderRequestError('provider_unavailable', 'Recognition provider returned invalid JSON');
+    }
     if (payload.status !== 'success') {
-      throw new Error(payload.error?.error_message ?? 'AudD recognition failed');
+      throw new ProviderRequestError(
+        'provider_rejected',
+        `Recognition provider rejected the request${payload.error?.error_code ? ` (${payload.error.error_code})` : ''}`,
+      );
     }
     if (!payload.result) {
       return { provider: this.id, status: 'no-match' };
@@ -63,19 +92,21 @@ export class AudDProvider implements RecognitionProvider {
     }
 
     const externalLinks: Record<string, string> = {};
-    if (result.song_link) externalLinks.audd = result.song_link;
-    if (result.apple_music?.url) externalLinks.appleMusic = result.apple_music.url;
-    if (result.spotify?.external_urls?.spotify) externalLinks.spotify = result.spotify.external_urls.spotify;
-    if (result.deezer?.link) externalLinks.deezer = result.deezer.link;
+    if (isHttpsUrl(result.song_link)) externalLinks.audd = result.song_link;
+    if (isHttpsUrl(result.apple_music?.url)) externalLinks.appleMusic = result.apple_music.url;
+    if (isHttpsUrl(result.spotify?.external_urls?.spotify)) externalLinks.spotify = result.spotify.external_urls.spotify;
+    if (isHttpsUrl(result.deezer?.link)) externalLinks.deezer = result.deezer.link;
 
     return {
       provider: this.id,
       status: 'matched',
-      confidence: typeof result.score === 'number' ? result.score : undefined,
-      offsetSeconds: result.timecode ? Number(result.timecode) : undefined,
+      confidence: typeof result.score === 'number' && result.score >= 0 && result.score <= 1
+        ? result.score
+        : undefined,
+      offsetSeconds: parseTimecode(result.timecode),
       track: {
-        title: result.title ?? 'Unknown title',
-        artists: result.artist ? result.artist.split(/\\s*[,;&]\\s*/).filter(Boolean) : [],
+        title: result.title,
+        artists: result.artist ? result.artist.split(/\s*[,;&]\s*/).filter(Boolean) : [],
         album: result.album,
         releaseDate: result.release_date,
         isrc: result.isrc,
@@ -83,4 +114,31 @@ export class AudDProvider implements RecognitionProvider {
       },
     };
   }
+}
+
+function isHttpsUrl(value: string | undefined): value is string {
+  if (!value) {
+    return false;
+  }
+  try {
+    return new URL(value).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+function parseTimecode(value: string | undefined): number | undefined {
+  if (!value) {
+    return undefined;
+  }
+  if (/^\d+(?:\.\d+)?$/.test(value)) {
+    const seconds = Number(value);
+    return Number.isFinite(seconds) ? seconds : undefined;
+  }
+  const match = /^(\d{1,2}):([0-5]\d):([0-5]\d(?:\.\d+)?)$/.exec(value);
+  if (!match) {
+    return undefined;
+  }
+  const seconds = Number(match[1]) * 3600 + Number(match[2]) * 60 + Number(match[3]);
+  return Number.isFinite(seconds) ? seconds : undefined;
 }

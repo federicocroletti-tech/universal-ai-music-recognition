@@ -14,6 +14,7 @@
   "include": [
     "server/index.ts",
     "server/run.ts",
+    "server/http-app.ts",
     "server/http-run.ts",
     "server/providers/**/*.ts",
     "src/app/recognition/catalog.ts",
