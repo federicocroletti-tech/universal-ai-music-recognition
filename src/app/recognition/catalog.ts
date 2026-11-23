@@ -1,5 +1,5 @@
-import { Melody } from './models';
-import { parseNotes } from './notation';
+import { Melody } from './models.js';
+import { parseNotes } from './notation.js';
 
 interface CatalogEntry {
   readonly id: string;

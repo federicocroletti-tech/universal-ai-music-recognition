@@ -22,6 +22,15 @@ npm run build # static prerendered build in dist/hum-finder/browser
 npm run e2e   # end-to-end tests with a simulated microphone (after build)
 ```
 
+MCP server (local stdio):
+
+```bash
+npm run mcp
+# Tools: recognize_hum (PCM16 base64 + sample rate), list_catalog
+```
+
+The MCP server is provider-neutral and offline. It accepts mono 16-bit little-endian PCM audio and matches it locally against the bundled public-domain catalog. No audio is uploaded.
+
 To continue development (human or AI agent), read [AGENTS.md](./AGENTS.md) first: workflow, architecture, decisions, current status, and next steps.
 
 ## Purpose

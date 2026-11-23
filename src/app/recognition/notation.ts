@@ -1,4 +1,4 @@
-import { MelodyNote } from './models';
+import { MelodyNote } from './models.js';
 
 const NOTE_OFFSETS: Readonly<Record<string, number>> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 const TOKEN = /^([A-G])([#b]?)(\d)(?::(\d+(?:\.\d+)?))?$/;

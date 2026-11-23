@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist-server",
+    "rootDir": ".",
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": [
+    "server/index.ts",
+    "server/run.ts",
+    "src/app/recognition/catalog.ts",
+    "src/app/recognition/matcher.ts",
+    "src/app/recognition/models.ts",
+    "src/app/recognition/notation.ts",
+    "src/app/recognition/pitch.ts",
+    "src/app/recognition/recognizer.ts",
+    "src/app/recognition/segmentation.ts"
+  ]
+}

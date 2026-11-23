@@ -1,4 +1,4 @@
-import { PitchFrame, SungNote } from './models';
+import { PitchFrame, SungNote } from './models.js';
 
 const MIN_NOTE_SECONDS = 0.06;
 const PITCH_JUMP_SEMITONES = 0.75;

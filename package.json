@@ -7,9 +7,13 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "build:mcp": "tsc -p tsconfig.server.json",
+    "mcp": "npm run build:mcp && node dist-server/server/run.js",
+    "test:mcp": "vitest run server/index.spec.ts"
   },
   "private": true,
+  "type": "module",
   "packageManager": "npm@10.9.8",
   "dependencies": {
     "@angular/common": "^22.3.0",
@@ -20,8 +24,10 @@
     "@angular/platform-server": "^22.3.0",
     "@angular/router": "^22.3.0",
     "@angular/ssr": "^22.3.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@angular/build": "^22.3.0",

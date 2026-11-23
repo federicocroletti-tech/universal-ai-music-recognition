@@ -1,5 +1,5 @@
-import { PitchFrame } from './models';
-import { hzToMidi } from './notation';
+import { PitchFrame } from './models.js';
+import { hzToMidi } from './notation.js';
 
 export interface PitchOptions {
   readonly minHz?: number;
